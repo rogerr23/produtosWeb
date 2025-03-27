@@ -2,30 +2,81 @@
     <div class="card shadow p-4">
         <h5 class="card-title">Formulário de cadastro de produtos</h5>
         <hr />
-        
-        <form>
+
+        <div *ngIf="mensagem" class="alert alert-success alert-dismissible fade show" role="alert">
+            <strong> {{ mensagem }} </strong>
+            <button (click)="mensagem = ''" type="button" class="btn-close" aria-label="Close"></button>
+        </div>
+
+        <form [formGroup]="form" (ngSubmit)="onSubmit()">
             <div class="mb-3">
                 <label for="nome" class="form-label">Nome</label>
-                <input type="text" class="form-control" id="nome" placeholder="Digite o nome do produto">
+                <input type="text" formControlName="nome" class="form-control" id="nome"
+                    placeholder="Digite o nome do produto">
+
+                <span class="text-danger" *ngIf="f['nome'].touched && f['nome'].invalid">
+                    <span *ngIf="f['nome']?.hasError('required')">
+                        Por favor, informe o nome do produto.
+                    </span>
+                    <span *ngIf="f['nome']?.hasError('minlength')">
+                        Por favor, informe o nome do produto com
+                        pelo menos 8 caracteres.
+                    </span>
+                    <span *ngIf="f['nome']?.hasError('maxlength')">
+                        Por favor, informe o nome do produto com
+                        no máximo 100 caracteres.
+                    </span>
+                </span>
+
             </div>
             <div class="mb-3">
                 <label for="preco" class="form-label">Preço</label>
-                <input type="number" class="form-control" id="preco" placeholder="Digite o preço">
+                <input type="number" formControlName="preco" class="form-control" id="preco"
+                    placeholder="Digite o preço">
+                <span class="text-danger" *ngIf="f['preco'].touched &&
+                    f['preco'].invalid">
+                    <span *ngIf="f['preco']?.hasError('required')">
+                        Por favor, informe o preço do produto.
+                    </span>
+                    <span *ngIf="f['preco']?.hasError('min')">
+                        Por favor, informe um preço com valor mínimo de '0.01'.
+                    </span>
+                </span>
             </div>
+
             <div class="mb-3">
                 <label for="quantidade" class="form-label">Quantidade</label>
-                <input type="number" class="form-control" id="quantidade" placeholder="Digite a quantidade">
+                <input type="number" formControlName="quantidade" class="form-control" id="quantidade"
+                    placeholder="Digite a quantidade">
+                <span class="text-danger" *ngIf="f['quantidade'].touched &&
+                    f['quantidade'].invalid">
+                    <span *ngIf="f['quantidade']?.hasError('required')">
+                        Por favor, informe a quantidade do produto.
+                    </span>
+                    <span *ngIf="f['quantidade']?.hasError('min')">
+                        Por favor, informe a quantidade com valor mínimo de '0'.
+                    </span>
+                </span>
             </div>
             <div class="mb-3">
                 <label for="categoria" class="form-label">Categoria</label>
-                <select class="form-select" id="categoria">
-                    <option selected>Selecione uma categoria</option>
-                    <option value="1">Eletrônicos</option>
-                    <option value="2">Roupas</option>
-                    <option value="3">Alimentos</option>
+                <select class="form-select" formControlName="categoriaId" id="categoria">
+                    <option value="">Escolha uma opção</option>
+
+                    <option *ngFor="let c of categorias" value="{{c.id}}">
+                        {{c.nome}}
+                    </option>
+
                 </select>
+
+                <span class="text-danger" *ngIf="f['categoriaId'].touched && f['categoriaId'].invalid">
+                    <span *ngIf="f['categoriaId']?.hasError('required')">
+                        Por favor, selecione a categoria do produto.
+                    </span>
+                </span>
+
             </div>
-            <button type="submit" class="btn btn-primary">Cadastrar</button>
+            <button type="submit" class="btn btn-primary" [disabled]="form.invalid">Cadastrar</button>
         </form>
     </div>
 </div>
